@@ -61,6 +61,19 @@ function main() {
     }
   });
 
+  commands.set("unregister", (message, args) => {
+    if (args.length > 0) {
+      let keyword = args[0];
+      if (keyword === "all") {
+        customYoutubePlayCommands.clear();
+        message.channel.send("Unregistered all keywords");
+      } else {
+        customYoutubePlayCommands.delete(keyword);
+        message.channel.send(`Deleted "${keyword}" keyword`);
+      }
+    }
+  });
+
   let dispatcher: discord.StreamDispatcher;
 
   function tryPlayYoutubeAudio(message: discord.Message, url: string) {

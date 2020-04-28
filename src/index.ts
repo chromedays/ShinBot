@@ -1,7 +1,6 @@
 import * as discord from "discord.js";
 import * as dotenv from "dotenv";
 import ytdl from "ytdl-core";
-import { cpus } from "os";
 
 main();
 
@@ -35,6 +34,8 @@ function main() {
     if (url) {
       tryPlayYoutubeAudio(message, url);
     }
+
+    message.channel.send(`Playing ${url}`);
   });
 
   commands.set("stop", (message, args) => {
@@ -46,6 +47,17 @@ function main() {
       message.member.voice.channel.join().then((connection) => {
         connection.disconnect();
       });
+    }
+  });
+
+  let customYoutubePlayCommands = new Map<string, string>();
+
+  commands.set("register", (message, args) => {
+    if (args.length > 1) {
+      let keyword = args[0];
+      let url = args[1];
+      customYoutubePlayCommands.set(keyword, url);
+      message.channel.send(`Now typing "${keyword}" will play ${url}`);
     }
   });
 
@@ -64,6 +76,20 @@ function main() {
       return;
     }
     console.log(`Message received: ${message.content}`);
+
+    let keywordToPlay: string | null = null;
+    let urlToPlay: string | null = null;
+    customYoutubePlayCommands.forEach((url, keyword) => {
+      console.log(keyword);
+      if (message.content.includes(keyword)) {
+        keywordToPlay = keyword;
+        urlToPlay = url;
+      }
+    });
+    if (keywordToPlay && urlToPlay) {
+      console.log(`${keywordToPlay} detected. Playing ${urlToPlay}`);
+      tryPlayYoutubeAudio(message, urlToPlay);
+    }
 
     if (message.content.startsWith(prefix)) {
       let args = message.content.slice(prefix.length).split(/ +/);

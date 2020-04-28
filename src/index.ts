@@ -1,5 +1,6 @@
-const discord = require("discord.js");
-const dotenv = require("dotenv");
+import * as discord from "discord.js";
+import * as dotenv from "dotenv";
+
 dotenv.config();
 
 const token = process.env.BOT_TOKEN;
